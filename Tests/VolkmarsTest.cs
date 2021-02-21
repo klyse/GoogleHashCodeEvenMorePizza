@@ -9,6 +9,7 @@ namespace Tests
 	public class VolkmarsTest
 	{
 		[Test]
+		[Parallelizable(ParallelScope.All)]
 		[TestCase("a_example.in")]
 		[TestCase("b_little_bit_of_everything.in")]
 		[TestCase("c_many_ingredients.in")]
