@@ -21,7 +21,7 @@ namespace Tests
 			var input = Input.Parse(content);
 			var output = solver.Solve(input);
 
-			Console.WriteLine($"Total Score: {output.GetScore(input)}");
+			Console.WriteLine($"Total Score: {output.GetScore(input):N}");
 			example.WriteToFile(output.GetOutputFormat());
 			Assert.Pass();
 		}

@@ -9,22 +9,51 @@ namespace GoogleHashCode.Algorithms
     {
         Dictionary<string, List<Pizza>> IngredientPizzas = new();
         HashSet<Pizza> Used = new();
+        List<string> IngredientOrder = new();
 
-        void RemoveUsed()
+
+        void RemoveUsed(bool force = false)
         {
-            if (Used.Count < 100)
+            if (Used.Count < 100 && !force)
                 return;
 
             foreach (var item in IngredientPizzas.ToList())
                 if (item.Value.Any(q => Used.Contains(q)))
-                    IngredientPizzas[item.Key] = item.Value.RemoveAll(q => Used.Contains(q)>);
+                    item.Value.RemoveAll(q => Used.Contains(q));
+
+            IngredientOrder = IngredientPizzas.Where(q => q.Value.Count > 0).OrderByDescending(q => q.Value.Count).Select(q => q.Key).ToList();
+            Used.Clear();
         }
 
-        string GetMostUsedIngredient()
-            => IngredientPizzas.OrderByDescending(q => q.Value.Count).Select(q => q.Key).FirstOrDefault();
+        Pizza FirstPizza()
+        {
+            var result = FirstUnusedPizza(IngredientPizzas[IngredientOrder[0]]);
+            if (result != null)
+                return result;
+
+            RemoveUsed(true);
+
+            if (IngredientOrder.Count > 0)
+                return FirstUnusedPizza(IngredientPizzas[IngredientOrder[0]]);
+
+            return null;
+        }
 
         Pizza FirstUnusedPizza(List<Pizza> pizzas)
             => pizzas.FirstOrDefault(q => !Used.Contains(q));
+
+        Pizza FirstUnusedPizza()
+        {
+            foreach (var item in IngredientOrder)
+            {
+                var pizza = FirstUnusedPizza(IngredientPizzas[item]);
+                if (pizza != null)
+                    return pizza;
+
+            }
+
+            return null;
+        }
 
         public Output Solve(Input input)
         {
@@ -39,24 +68,56 @@ namespace GoogleHashCode.Algorithms
                 }
             }
 
+            RemoveUsed(true);
+
+
             var result = new Output();
             var pizzas = new List<Pizza>();
+            var usedIngs = new HashSet<string>();
+
+            bool AddPizza(Pizza pizza)
+            {
+                if (pizza == null)
+                    return false;
+
+                pizzas.Add(pizza);
+                usedIngs.UnionWith(pizza.ingredients);
+                Used.Add(pizza);
+                return true;
+            }
+
             foreach (var team in input.NumberOfTeams.OrderByDescending(q => q.Key))
             {
                 for (var teamIndex = 0; teamIndex < team.Value; teamIndex++)
                 {
                     pizzas.Clear();
-                    pizzas.
+                    usedIngs.Clear();
 
-
-
-                    var pizzaIds = Pizzas.Skip(pizzaStart).Take(team.Key).Select(q => q.id).ToList();
-                    if (pizzaIds.Count != team.Key)
+                    if (!AddPizza(FirstPizza()))
                         break;
 
-                    result.Deliveries.Add(new Delivery(team.Key, pizzaIds));
+                    for (var i = 1; i < team.Key; i++)
+                    {
+                        var added = false;
+                        foreach (var ing in IngredientOrder.Where(q => !usedIngs.Contains(q)))
+                        {
+                            added = AddPizza(FirstUnusedPizza(IngredientPizzas[ing]));
+                            if (added)
+                                break;
+                        }
 
-                    pizzaStart += team.Key;
+                        if (!added)
+                            AddPizza(FirstUnusedPizza());
+                    }
+
+                    if (pizzas.Count != team.Key)
+                    {
+                        foreach (var item in pizzas)
+                            Used.Remove(item);
+                        break;
+                    }
+
+                    result.Deliveries.Add(new Delivery(team.Key, pizzas.Select(q => q.id).ToList()));
 
                     RemoveUsed();
                 }
