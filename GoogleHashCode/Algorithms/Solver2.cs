@@ -11,10 +11,9 @@ namespace GoogleHashCode.Algorithms
         HashSet<Pizza> Used = new();
         List<string> IngredientOrder = new();
 
-
         void RemoveUsed(bool force = false)
         {
-            if (Used.Count < 100 && !force)
+            if (Used.Count < 500 && !force)
                 return;
 
             foreach (var item in IngredientPizzas.ToList())
@@ -27,6 +26,9 @@ namespace GoogleHashCode.Algorithms
 
         Pizza FirstPizza()
         {
+            if (IngredientOrder.Count == 0)
+                return null;
+
             var result = FirstUnusedPizza(IngredientPizzas[IngredientOrder[0]]);
             if (result != null)
                 return result;
@@ -68,8 +70,10 @@ namespace GoogleHashCode.Algorithms
                 }
             }
 
-            RemoveUsed(true);
+            foreach (var item in IngredientPizzas.Keys.ToList())
+                IngredientPizzas[item] = IngredientPizzas[item].OrderByDescending(q => q.ingredients.Count).ToList();
 
+            RemoveUsed(true);
 
             var result = new Output();
             var pizzas = new List<Pizza>();
