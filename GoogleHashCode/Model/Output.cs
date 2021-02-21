@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GoogleHashCode.Base;
 
 namespace GoogleHashCode.Model
@@ -21,10 +22,9 @@ namespace GoogleHashCode.Model
 			return result.ToArray();
 		}
 
-		public int GetScore()
+		public int GetScore(Input input)
 		{
-			return 0;
-			// throw new NotImplementedException();
+			return (int) Deliveries.Sum(r => (Math.Pow(r.pizzaIds.SelectMany(p => input.Pizzas[p].ingredients).Distinct().Count(), 2)));
 		}
 	}
 }
