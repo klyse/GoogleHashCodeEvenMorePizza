@@ -24,7 +24,7 @@ namespace GoogleHashCode.Model
 
 		public int GetScore(Input input)
 		{
-			return (int) Deliveries.Sum(r => (Math.Pow(r.pizzaIds.SelectMany(p => input.Pizzas[p].ingredients).Distinct().Count(), 2)));
+			return (int) Deliveries.Sum(r => Math.Pow(r.pizzaIds.SelectMany(p => input.Pizzas[p].ingredients).Distinct().Count(), 2));
 		}
 	}
 }
