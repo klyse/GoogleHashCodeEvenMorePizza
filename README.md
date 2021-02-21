@@ -36,18 +36,6 @@ These are the best scores we archived using various different versions of our al
 
 The score can be checked in the unit test output...
 
-### Score Board
-
-[Public Score Board](https://hashcodejudge.withgoogle.com/scoreboard)
-
-| Name                 | Rank | Participants | Description             |
-| -------------------- | ---- | ------------ | ----------------------- |
-| Hub                  |      |              | Austria / GDG-Innsbruck |
-| Italy                |      |              | Rank filtered by country|
-| World                |      |              | Total rank              |
-
-Team name: **DevOpsPirates**
-
 \#DevOpsPiratesRule
 
 ## Authors
