@@ -14,10 +14,10 @@ namespace Tests
 		[TestCase("c_many_ingredients.in")]
 		[TestCase("d_many_pizzas.in")]
 		[TestCase("e_many_teams.in")]
-		public void Solver1(string example)
+		public void Solver2(string example)
 		{
 			var content = example.ReadFromFile();
-			var solver = new Solver1();
+			var solver = new Solver2();
 			var input = Input.Parse(content);
 			var output = solver.Solve(input);
 
