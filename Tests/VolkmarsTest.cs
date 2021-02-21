@@ -9,6 +9,7 @@ namespace Tests
 	public class VolkmarsTest
 	{
 		[Test]
+		[Parallelizable(ParallelScope.All)]
 		[TestCase("a_example.in")]
 		[TestCase("b_little_bit_of_everything.in")]
 		[TestCase("c_many_ingredients.in")]
@@ -21,7 +22,7 @@ namespace Tests
 			var input = Input.Parse(content);
 			var output = solver.Solve(input);
 
-			Console.WriteLine($"Total Score: {output.GetScore(input):N}");
+			Console.WriteLine($"Total Score: {output.GetScore(input):N0}");
 			example.WriteToFile(output.GetOutputFormat());
 			Assert.Pass();
 		}
