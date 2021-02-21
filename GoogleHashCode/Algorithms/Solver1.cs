@@ -1,27 +1,75 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GoogleHashCode.Base;
 using GoogleHashCode.Model;
 
 namespace GoogleHashCode.Algorithms
 {
+	public static class Extensions
+	{
+		public static bool AddRange<T>(this HashSet<T> source, IEnumerable<T> items)
+		{
+			bool allAdded = true;
+			foreach (T item in items)
+			{
+				allAdded &= source.Add(item);
+			}
+
+			return allAdded;
+		}
+	}
+
 	public class Solver1 : ISolver<Input, Output>
 	{
 		public Output Solve(Input input)
 		{
-			var remainingPizzas = input.Pizzas;
+			var rareThreshold = (int) (input.Pizzas.SelectMany(r => r.ingredients).Distinct().Count() * 0.05);
+			var rareIngredients = input.Pizzas.SelectMany(r => r.ingredients)
+				.GroupBy(r => r)
+				.Select(r => new
+				{
+					Ingredient = r.Key,
+					Count = r.Count()
+				})
+				.OrderBy(r => r.Count)
+				.Take(rareThreshold)
+				.Select(r => r.Ingredient)
+				.ToList();
+
+			var remainingPizzas = input.Pizzas
+				.OrderByDescending(r => r.ingredients.Count)
+				.ToList();
 
 			var output = new Output();
-			foreach (var inputNumberOfTeam in input.NumberOfTeams)
+			foreach (var team in input.NumberOfTeams.OrderByDescending(r => r.Key))
 			{
-				for (var x = 0; x < inputNumberOfTeam.Value && remainingPizzas.Count >= inputNumberOfTeam.Key; ++x)
+				for (var teamCount = 0; teamCount < team.Value && remainingPizzas.Count >= team.Key; ++teamCount)
 				{
-					var deliveredPizzas = remainingPizzas.Take(inputNumberOfTeam.Key).ToList();
-					foreach (var deliveredPizza in deliveredPizzas)
+					List<Pizza> deliveredPizzas = new();
+
+					var containsRare = false;
+					for (var pizzaCount = 0; pizzaCount < team.Key; ++pizzaCount)
 					{
-						remainingPizzas.Remove(deliveredPizza);
+						Pizza selectedPizza;
+
+						if (!containsRare)
+						{
+							selectedPizza = remainingPizzas.FirstOrDefault(r => rareIngredients.Any(q => r.ingredients.Contains(q)));
+
+							if (selectedPizza is null)
+								selectedPizza = remainingPizzas.First();
+							containsRare = true;
+
+						}
+						else
+							selectedPizza = remainingPizzas.First();
+
+						deliveredPizzas.Add(selectedPizza);
+						remainingPizzas.Remove(selectedPizza);
 					}
-					
-					output.Deliveries.Add(new Delivery(inputNumberOfTeam.Key, deliveredPizzas.Select(r => r.id).ToList()));
+
+					output.Deliveries.Add(new Delivery(team.Key, deliveredPizzas.Select(r => r.id).ToList()));
 				}
 			}
 
