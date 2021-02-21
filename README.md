@@ -27,12 +27,12 @@ These are the best scores we archived using various different versions of our al
 
 | Case                  |  Points  |
 |-----------------------|----------|
-|                       |          |
-|                       |          |
-|                       |          |
-|                       |          |
-|                       |          |
-| **TOTAL**             |**      **|
+| A – Example | 65 |
+| B – A little bit of everything | 10,833 |
+| C – Many ingredients | 686,663,538 |
+| D – Many pizzas | 6,035,246 |
+| E – Many teams | 8,613,048 |
+| **TOTAL** | **701,322,730** |
 
 The score can be checked in the unit test output...
 
