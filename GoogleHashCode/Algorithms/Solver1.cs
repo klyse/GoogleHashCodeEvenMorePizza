@@ -6,20 +6,6 @@ using GoogleHashCode.Model;
 
 namespace GoogleHashCode.Algorithms
 {
-	public static class Extensions
-	{
-		public static bool AddRange<T>(this HashSet<T> source, IEnumerable<T> items)
-		{
-			bool allAdded = true;
-			foreach (T item in items)
-			{
-				allAdded &= source.Add(item);
-			}
-
-			return allAdded;
-		}
-	}
-
 	public class Solver1 : ISolver<Input, Output>
 	{
 		public Output Solve(Input input)
@@ -42,7 +28,7 @@ namespace GoogleHashCode.Algorithms
 				.ToList();
 
 			var output = new Output();
-			foreach (var team in input.NumberOfTeams.OrderByDescending(r => r.Key))
+			foreach (var team in input.NumberOfTeams.OrderByDescending(r => r.Key == 3))
 			{
 				for (var teamCount = 0; teamCount < team.Value && remainingPizzas.Count >= team.Key; ++teamCount)
 				{
@@ -60,7 +46,6 @@ namespace GoogleHashCode.Algorithms
 							if (selectedPizza is null)
 								selectedPizza = remainingPizzas.First();
 							containsRare = true;
-
 						}
 						else
 							selectedPizza = remainingPizzas.First();
